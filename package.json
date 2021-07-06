@@ -1,0 +1,20 @@
+{
+  "name": "react-node-cli",
+  "version": "1.0.0",
+  "description": "Make React Node Application from cli",
+  "preferGlobal": true,
+  "bin": {
+    "react-node-cli": "./commands.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Prabin Karki",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.11.0",
+    "inquirer": "^4.0.0",
+    "mongoose": "^4.13.2",
+    "shelljs": "^0.8.4"
+  }
+}
