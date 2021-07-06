@@ -4,6 +4,7 @@ const shell = require("shelljs");
 const path = require("path");
 const fs = require("fs");
 const { prompt } = require("inquirer");
+const packageInfo = require('./package.json')
 
 const CWD = process.cwd();
 const releaseFolderName = '.release'
@@ -108,7 +109,7 @@ async function workingOnGit() {
 }
 
 program
-  .version("1.0.0")
+  .version(packageInfo.version)
   .alias("v")
   .description("React Node Application Generator");
 
