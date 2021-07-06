@@ -12,23 +12,15 @@ This code contains the core node js code to serve react build and commnads file 
 
   
 ## Usage/Examples
-Download zip of this file to your system.
 
 ### Installation
 
-unzip downloaded code and cd into it after that do following,
-
-Install the dependencies
+Install package
 
 ```sh
-$ npm install
+$ npm i -g @prabink/react-node-cli 
 ```
 
-### Create Symlink
-
-```sh
-$ npm link
-```
 #### Now you can run the react-node-cli commands globally in your system
 
 ### Commands & Options

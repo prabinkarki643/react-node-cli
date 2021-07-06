@@ -1,6 +1,6 @@
 {
-  "name": "react-node-cli",
-  "version": "1.0.0",
+  "name": "@prabink/react-node-cli",
+  "version": "1.0.1",
   "description": "Make React Node Application from cli",
   "preferGlobal": true,
   "bin": {
@@ -28,10 +28,12 @@
     "react js"
   ],
   "license": "MIT",
+  "engines": {
+    "node": ">=10"
+  },
   "dependencies": {
     "commander": "^2.11.0",
     "inquirer": "^4.0.0",
-    "mongoose": "^4.13.2",
     "shelljs": "^0.8.4"
   }
 }

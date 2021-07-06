@@ -87,12 +87,12 @@ async function workingOnGit() {
     {
       type: "input",
       name: "branchName",
-      message: `Enter your prefer branch name: [default:${DEFAULT_BRANCH_NAME}`,
+      message: `Enter your prefer branch name: [default:${DEFAULT_BRANCH_NAME}]: `,
     },
     {
       type: "input",
       name: "commitMessage",
-      message: `Enter your commit message: [default:${DEFAULT_COMMIT_MESSAGE}`,
+      message: `Enter your commit message: [default:${DEFAULT_COMMIT_MESSAGE}]: `,
     },
   ]);
   const BRANCH_NAME = branchName || DEFAULT_BRANCH_NAME;
@@ -123,7 +123,7 @@ program
         {
           type: "confirm",
           name: "isCorrectDirectory",
-          message: `Make sure you are inside the react-project root directory`,
+          message: `Make sure you are inside the react project root directory`,
         },
       ]);
       if (!isCorrectDirectory) {
@@ -204,7 +204,7 @@ program
       );
       console.info(
         colorReference.FgGreen,
-        `To run locally: $cd release && npm start`,
+        `To run locally: $cd ${releaseFolderName} && npm start`,
         colorReference.Reset
       );
       process.exit();
