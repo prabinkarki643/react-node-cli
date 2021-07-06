@@ -16,7 +16,7 @@ Download zip of this file to your system.
 
 ### Installation
 
-Goto downloaded zip directory and unzip it and cd into it after that do following,
+unzip downloaded code and cd into it after that do following,
 
 Install the dependencies
 
@@ -43,7 +43,9 @@ Commands:
   generate|g     Generate React Node Application
 
 Example call:
-Make sure you are in the proper react project directory before running below command.
+Make sure you are in the proper react project directory 
+before running below command.
+
   $ react-node-cli g
   $ react-node-cli --help
 ```
