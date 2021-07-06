@@ -48,13 +48,12 @@ Make sure you are in the proper react project directory before running below com
   $ react-node-cli --help
 ```
 ## Note
-```sh
   "$ react-node-cli g" This command will generate .release
   directory in your root react project directory and 
   will contain build folder too, thats why please 
   add ./release/build to your .gitignore file 
   to ignore the react build from release.
-```
+
   
 ## Tech Stack
 
