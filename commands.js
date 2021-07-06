@@ -37,77 +37,6 @@ const colorReference = {
   BgWhite: "\x1b[47m",
 };
 
-async function workingOnGit() {
-  console.log(
-    colorReference.FgMagenta,
-    "....Working on git....",
-    colorReference.Reset
-  );
-  // checking git and working on git
-  if (!shell.which("git")) {
-    console.log(
-      colorReference.FgRed,
-      "Sorry, this script requires git",
-      colorReference.Reset
-    );
-    shell.exit(1);
-  }
-  // Findout git origin
-  const CURRENT_GIT_ORIGIN_RESULT = shell.exec(
-    "git config --get remote.origin.url"
-  );
-  if (CURRENT_GIT_ORIGIN_RESULT.code !== 0) {
-    console.log(
-      colorReference.FgRed,
-      "Error: Please make sure you have git initialized and added the remote origin, Try again later..",
-      colorReference.Reset
-    );
-    shell.exit(1);
-  }
-  const CURRENT_GIT_ORIGIN = CURRENT_GIT_ORIGIN_RESULT.stdout.replace(
-    /(\n|\r)/g,
-    ""
-  );
-  console.log(
-    colorReference.FgCyan,
-    "Your current git origin: ",
-    CURRENT_GIT_ORIGIN,
-    colorReference.Reset
-  );
-  // switching to release directory to work on git operation
-  shell.cd(releaseDir);
-  // initialized git
-  shell.exec("git init");
-  // Set remote origin
-  shell.exec(`git remote add origin "${CURRENT_GIT_ORIGIN}"`);
-
-  // Get prefer branch name and commit message
-  const DEFAULT_BRANCH_NAME = "frontend-release";
-  const DEFAULT_COMMIT_MESSAGE = "release with build";
-  const { branchName, commitMessage } = await prompt([
-    {
-      type: "input",
-      name: "branchName",
-      message: `Enter your prefer branch name: [default:${DEFAULT_BRANCH_NAME}]: `,
-    },
-    {
-      type: "input",
-      name: "commitMessage",
-      message: `Enter your commit message: [default:${DEFAULT_COMMIT_MESSAGE}]: `,
-    },
-  ]);
-  const BRANCH_NAME = branchName || DEFAULT_BRANCH_NAME;
-  const COMMIT_MESSAGE = commitMessage || DEFAULT_COMMIT_MESSAGE;
-
-  // Do basic git operation to push to prefer branch
-  shell.exec(`git checkout -b "${BRANCH_NAME}"`);
-  shell.exec(`git add .`);
-  shell.exec(`git commit -m "${COMMIT_MESSAGE}"`);
-  shell.exec(`git push -f origin "${BRANCH_NAME}"`);
-
-  return { CURRENT_GIT_ORIGIN, BRANCH_NAME, COMMIT_MESSAGE };
-}
-
 program
   .version(packageInfo.version)
   .alias("v")
@@ -195,6 +124,15 @@ program
       // copying build to release directory
       shell.cp("-R", `${CWD}/build/.`, releaseDir);
 
+      //[gitignire-operation] Add build folder to gitignore from release directory
+      const gitIgnireFilePath = `${CWD}/.gitignore`
+      const stringToAdd = `\n\n#Added By React-Node-Cli\n${releaseFolderName}/build\n`
+      const data = fs.readFileSync(gitIgnireFilePath)
+      // Only add if it is not added previously
+      if(data.indexOf(stringToAdd) < 0){
+        fs.appendFileSync(gitIgnireFilePath, stringToAdd);
+       }
+
       const { CURRENT_GIT_ORIGIN, BRANCH_NAME, COMMIT_MESSAGE } =
         await workingOnGit();
 
@@ -220,3 +158,75 @@ program
   });
 
 program.parse(process.argv);
+
+
+async function workingOnGit() {
+  console.log(
+    colorReference.FgMagenta,
+    "....Working on git....",
+    colorReference.Reset
+  );
+  // checking git and working on git
+  if (!shell.which("git")) {
+    console.log(
+      colorReference.FgRed,
+      "Sorry, this script requires git",
+      colorReference.Reset
+    );
+    shell.exit(1);
+  }
+  // Findout git origin
+  const CURRENT_GIT_ORIGIN_RESULT = shell.exec(
+    "git config --get remote.origin.url"
+  );
+  if (CURRENT_GIT_ORIGIN_RESULT.code !== 0) {
+    console.log(
+      colorReference.FgRed,
+      "Error: Please make sure you have git initialized and added the remote origin, Try again later..",
+      colorReference.Reset
+    );
+    shell.exit(1);
+  }
+  const CURRENT_GIT_ORIGIN = CURRENT_GIT_ORIGIN_RESULT.stdout.replace(
+    /(\n|\r)/g,
+    ""
+  );
+  console.log(
+    colorReference.FgCyan,
+    "Your current git origin: ",
+    CURRENT_GIT_ORIGIN,
+    colorReference.Reset
+  );
+  // switching to release directory to work on git operation
+  shell.cd(releaseDir);
+  // initialized git
+  shell.exec("git init");
+  // Set remote origin
+  shell.exec(`git remote add origin "${CURRENT_GIT_ORIGIN}"`);
+
+  // Get prefer branch name and commit message
+  const DEFAULT_BRANCH_NAME = "frontend-release";
+  const DEFAULT_COMMIT_MESSAGE = "release with build";
+  const { branchName, commitMessage } = await prompt([
+    {
+      type: "input",
+      name: "branchName",
+      message: `Enter your prefer branch name: [default:${DEFAULT_BRANCH_NAME}]: `,
+    },
+    {
+      type: "input",
+      name: "commitMessage",
+      message: `Enter your commit message: [default:${DEFAULT_COMMIT_MESSAGE}]: `,
+    },
+  ]);
+  const BRANCH_NAME = branchName || DEFAULT_BRANCH_NAME;
+  const COMMIT_MESSAGE = commitMessage || DEFAULT_COMMIT_MESSAGE;
+
+  // Do basic git operation to push to prefer branch
+  shell.exec(`git checkout -b "${BRANCH_NAME}"`);
+  shell.exec(`git add .`);
+  shell.exec(`git commit -m "${COMMIT_MESSAGE}"`);
+  shell.exec(`git push -f origin "${BRANCH_NAME}"`);
+
+  return { CURRENT_GIT_ORIGIN, BRANCH_NAME, COMMIT_MESSAGE };
+}
