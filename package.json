@@ -9,7 +9,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Prabin Karki",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/githubprabin143/react-node-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/githubprabin143/react-node-cli/issues"
+  },
+  "author": {
+    "name": "Prabin Karki",
+    "email": "prabinkarki643@gmail.com",
+    "url": "https://prabin-karki.com.np"
+  },
+  "keywords": [
+    "react-node-cli",
+    "react-node",
+    "node js",
+    "react js"
+  ],
   "license": "MIT",
   "dependencies": {
     "commander": "^2.11.0",
