@@ -4,10 +4,12 @@ const shell = require("shelljs");
 const path = require("path");
 const fs = require("fs");
 const { prompt } = require("inquirer");
-const packageInfo = require('./package.json')
+const packageInfo = require("./package.json");
 
 const CWD = process.cwd();
-const releaseFolderName = '.release'
+const referenceCodeDirectoryName = ".react-node-cli"
+const nodeCoreDirectoryName = `${referenceCodeDirectoryName}/node`; //Used to store node code which will be editable bu user later
+const releaseFolderName = "releaseOut"; //Used to store release out code, auto generated so please add it to git ignore
 const releaseDir = `${CWD}/${releaseFolderName}`;
 const colorReference = {
   Reset: "\x1b[0m",
@@ -82,28 +84,55 @@ program
           type: "confirm",
           name: "isNewRelease",
           default: false,
-          message: `Do you want to generate brand new release. only give Yes if you want to overide all your code on ${releaseFolderName} directory?`,
+          message: `Do you want to generate brand new release. only give Yes if you want to overide all your code on ${nodeCoreDirectoryName} directory?`,
         },
       ]);
 
       if (isNewRelease) {
-        shell.rm("-rf", releaseDir);
-        shell.mkdir(releaseDir);
+        shell.rm("-rf", referenceCodeDirectoryName);
+        shell.mkdir('-p',nodeCoreDirectoryName);
         shell.cp(
           "-R",
           `${__dirname}/node/*`,
           `${__dirname}/node/.*`,
-          releaseDir
+          nodeCoreDirectoryName
         );
+
+        const { isCodeChangeNeeded } = await prompt([
+          {
+            type: "confirm",
+            name: "isCodeChangeNeeded",
+            default: false,
+            message: `Make sure to change your node code if needed inside ${nodeCoreDirectoryName} folder before procedding. eg PORT , CORS etc`,
+          },
+        ]);
       } else {
-        if (!fs.existsSync(releaseDir)) {
+        if (!fs.existsSync(nodeCoreDirectoryName)) {
           console.log(
             colorReference.FgRed,
-            "Sorry: You dont have existing release directory",
+            `Sorry: You dont have existing ${nodeCoreDirectoryName} directory, Please try again with Yes option to generate brand new release`,
             colorReference.Reset
           );
           process.exit();
         }
+      }
+
+      //Copy all fresh/modified code from code node folder to release folder
+      shell.rm("-rf", releaseDir);
+      shell.mkdir(releaseDir);
+      shell.cp(
+        "-R",
+        `${nodeCoreDirectoryName}/*`,
+        `${nodeCoreDirectoryName}/.*`,
+        releaseDir
+      );
+      //[gitignire-operation] Add release out folder to gitignore which is auto generaterd
+      const gitIgnireFilePath = `${CWD}/.gitignore`;
+      const stringToAdd = `\n\n#Added By React-Node-Cli\n${releaseFolderName}\n`;
+      const data = fs.readFileSync(gitIgnireFilePath);
+      // Only add if it is not added previously
+      if (data.indexOf(stringToAdd) < 0) {
+        fs.appendFileSync(gitIgnireFilePath, stringToAdd);
       }
 
       console.log(
@@ -123,15 +152,6 @@ program
 
       // copying build to release directory
       shell.cp("-R", `${CWD}/build/.`, releaseDir);
-
-      //[gitignire-operation] Add build folder to gitignore from release directory
-      const gitIgnireFilePath = `${CWD}/.gitignore`
-      const stringToAdd = `\n\n#Added By React-Node-Cli\n${releaseFolderName}/build\n`
-      const data = fs.readFileSync(gitIgnireFilePath)
-      // Only add if it is not added previously
-      if(data.indexOf(stringToAdd) < 0){
-        fs.appendFileSync(gitIgnireFilePath, stringToAdd);
-       }
 
       const { CURRENT_GIT_ORIGIN, BRANCH_NAME, COMMIT_MESSAGE } =
         await workingOnGit();
@@ -158,7 +178,6 @@ program
   });
 
 program.parse(process.argv);
-
 
 async function workingOnGit() {
   console.log(
