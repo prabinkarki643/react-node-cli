@@ -7,7 +7,7 @@ const { prompt } = require("inquirer");
 const packageInfo = require("./package.json");
 
 const CWD = process.cwd();
-const referenceCodeDirectoryName = ".react-node-cli"
+const referenceCodeDirectoryName = ".react-node-cli";
 const nodeCoreDirectoryName = `${referenceCodeDirectoryName}/node`; //Used to store node code which will be editable bu user later
 const releaseFolderName = "releaseOut"; //Used to store release out code, auto generated so please add it to git ignore
 const releaseDir = `${CWD}/${releaseFolderName}`;
@@ -39,10 +39,11 @@ const colorReference = {
   BgWhite: "\x1b[47m",
 };
 
+
 program
   .version(packageInfo.version)
-  .alias("v")
   .description("React Node Application Generator");
+
 
 // Generate Command
 program
@@ -90,7 +91,7 @@ program
 
       if (isNewRelease) {
         shell.rm("-rf", referenceCodeDirectoryName);
-        shell.mkdir('-p',nodeCoreDirectoryName);
+        shell.mkdir("-p", nodeCoreDirectoryName);
         shell.cp(
           "-R",
           `${__dirname}/node/*`,
@@ -177,7 +178,66 @@ program
     }
   });
 
-program.parse(process.argv);
+// Generate Starter Structure Command
+program
+  .command("export_react_structure")
+  .alias("export_rs")
+  .option('-p, --path [path]', 'specify path to export')
+  .description("Export React Starter Structure")
+  .action(async ({path:incomingPath}) => {
+    try {
+
+      console.log(
+        colorReference.FgCyan,
+        "Your current working directory: ",
+        CWD,
+        colorReference.Reset
+      );
+      const DEFAULT_EXTRACT_FOLDER_NAME = "/react_structure";
+      var folderToExport=DEFAULT_EXTRACT_FOLDER_NAME
+      if(incomingPath){
+        folderToExport=incomingPath
+      }else{
+        const { extractFolderName } = await prompt([
+          {
+            type: "input",
+            name: "extractFolderName",
+            message: `Enter your prefer folder name to export: [default:${DEFAULT_EXTRACT_FOLDER_NAME}], if you want to export to your existing src folder, simply enter src as a folder name: `,
+          },
+        ]);
+        if(extractFolderName) folderToExport=extractFolderName
+      }
+
+      const exportPath = path.join(
+        CWD,
+        folderToExport
+      );
+      shell.mkdir("-p", exportPath);
+      shell.cp(
+        "-R",
+        `${__dirname}/react_structure/*`,
+        // `${__dirname}/react_structure/.*`,
+        exportPath
+      );
+      const dirs = fs.readdirSync(`${__dirname}/react_structure`)
+      console.log(colorReference.FgGreen,`Exported Directories: ${JSON.stringify(dirs)} inside ${exportPath}`,colorReference.Reset)
+      console.log(
+        colorReference.BgRed,
+        "packages to install to work with this structure: npm install --save axios ",
+        colorReference.Reset
+      );
+      process.exit();
+    } catch (error) {
+      console.log(
+        colorReference.FgRed,
+        "Error: error executing command ",
+        error,
+        colorReference.Reset
+      );
+      process.exit(1);
+    }
+  });
+  program.parse(process.argv);
 
 async function workingOnGit() {
   console.log(
