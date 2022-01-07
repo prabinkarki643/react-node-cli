@@ -1,7 +1,7 @@
 {
   "name": "@prabink/react-node-cli",
-  "version": "2.0.0",
-  "description": "Make React Node Application from cli",
+  "version": "2.1.0",
+  "description": "React Node Application Generator & Helpers To Serve React Build, Push to github & Export industry level react project structure ",
   "preferGlobal": true,
   "bin": {
     "react-node-cli": "./commands.js"
@@ -28,7 +28,8 @@
     "react js",
     "convert react into fullstack app",
     "Best practise react code",
-    "Best react folder structure"
+    "Best react folder structure",
+    "Github deploy"
   ],
   "license": "MIT",
   "engines": {
