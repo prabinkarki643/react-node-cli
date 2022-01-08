@@ -1,6 +1,6 @@
 {
   "name": "@prabink/react-node-cli",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "React Node Application Generator & Helpers To Serve React Build, Push to github & Export industry level react project structure ",
   "preferGlobal": true,
   "bin": {
